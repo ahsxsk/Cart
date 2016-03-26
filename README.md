@@ -5,6 +5,7 @@
 ##技术路线（现在想的比较简单，总体设计完成后开发迭代）
 - 框架:Spring+SpringMVC+Mybatis
 - 总体想法:Mysql保证最终数据一致性，Redis做缓存提供高性能，Redis和Mysql之间使用MQ(Kafka)进行数据同步。
+
 ###MySql设计
 ####购物车主表设计
 | 字段名     | 类型      |  备注  |
