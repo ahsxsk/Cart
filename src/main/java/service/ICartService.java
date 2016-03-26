@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
+ * 购物车服务基本操作
  * Created by MLS on 16/3/25.
  */
 public interface ICartService {
     /**
      * 根据购物车ID获取购物车信息
-     * @param id
+     * @param id 
      * @return
      */
     public Cart getCart(Long id) throws Exception;
@@ -33,13 +34,13 @@ public interface ICartService {
     public int addCart(Cart cart) throws Exception;
 
     /**
-     * 更新Cart商品数量
+     * 编辑Cart商品数量
      * @param id
      * @param amount
      * @return
      * @throws Exception
      */
-    public int updateSkuAmount(Long id, Integer amount) throws Exception;
+    public int editSkuAmount(Long id, Integer amount) throws Exception;
 
     /**
      * 删除购物车,支持批量删除

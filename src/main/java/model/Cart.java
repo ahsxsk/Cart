@@ -2,6 +2,8 @@ package main.java.model;
 
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+
 /**
  * cart库实体类
  * Created by MLS on 16/3/24.
@@ -66,15 +68,15 @@ public class Cart {
         return ctime;
     }
 
-    public void setCtime(int ctime) {
+    public void setCtime(Integer ctime) {
         this.ctime = ctime;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

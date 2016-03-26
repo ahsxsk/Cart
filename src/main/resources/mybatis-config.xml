@@ -3,7 +3,7 @@
 <configuration>
 
 	<settings>
-		<setting name="cacheEnabled" value="false" />
+		<setting name="cacheEnabled" value="true" />
 		<setting name="lazyLoadingEnabled" value="true" />
 		<setting name="aggressiveLazyLoading" value="true" />
 		<setting name="multipleResultSetsEnabled" value="true" />
@@ -14,10 +14,6 @@
 		<setting name="defaultStatementTimeout" value="25000" />
 		<!-- <setting name="mapUnderscoreToCamelCase" value="true"/> -->
 	</settings>
-
-
-
-
 
 	<plugins>
 		<plugin

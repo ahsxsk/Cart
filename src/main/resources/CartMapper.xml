@@ -13,6 +13,9 @@
     <sql id="Base_Column_List">
         id, userId, skuId, amount, shopId, ctime, status
     </sql>
+    <sql id="deleteStatus">
+        -1
+    </sql>
     <!--根据购物车id查询信息,唯一-->
     <select id="selectCartById" parameterType="main.java.model.Cart" resultMap="Cart">
         select <include refid="Base_Column_List"></include>
@@ -73,10 +76,10 @@
                 #{shopId, jdbcType=INTEGER},
             </if>
             <if test="ctime != null">
-                #{ctime, jdbcType=INTEGER})
+                #{ctime, jdbcType=INTEGER},
             </if>
             <if test="status != null">
-                #{status, jdbcType=INTEGER})
+                #{status, jdbcType=INTEGER}
             </if>
         </trim>
     </insert>
@@ -92,11 +95,11 @@
     <update id="deleteCartById" parameterType="main.java.model.Cart">
         update t_cart_cart
         <set>
-            status = #{status, jdbcType=INTEGER}
+            status = <include refid="deleteStatus"></include>
         </set>
         where id in
         <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
-            #{id, jdbcType=BIGINT}
+            #{item.id, jdbcType=BIGINT}
         </foreach>
     </update>
 </mapper>

@@ -19,8 +19,9 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 查询购物车信息
-     * @param id
-     * @return
+     * @param id 购物车ID
+     * @return 购物车信息
+     * @throws Exception
      */
     @Override
     public Cart getCart(Long id) throws Exception {
@@ -34,9 +35,10 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 获取购物车列表
-     * @param userId
-     * @param status
-     * @return
+     * @param userId 用户ID
+     * @param status 购物车状态 0:正常 -1:删除
+     * @return 购物车列表
+     * @throws Exception
      */
     @Override
     public List<Cart> getAll(Integer userId, Integer status) throws Exception{
@@ -55,9 +57,11 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 加车
-     * @param cart
-     * @return
+     * @param cart 购物车信息
+     * @return 是否加车成功 1:成功
+     * @throws Exception
      */
+    @Override
     public int addCart(Cart cart) throws Exception {
         if (cart == null) {
             throw new NullPointerException("cart is null");
@@ -76,12 +80,13 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 更新购物车商品数量
-     * @param id
-     * @param amount
-     * @return
+     * @param id 购物车ID
+     * @param amount 商品数量
+     * @return 是否更新成功
      * @throws Exception
      */
-    public int updateSkuAmount(Long id, Integer amount) throws Exception {
+    @Override
+    public int editSkuAmount(Long id, Integer amount) throws Exception {
         if (id == null) {
             throw new NullPointerException("id is null");
         }
@@ -102,19 +107,20 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 删除购物车
-     * @param ids
-     * @return
+     * @param ids 购物车ID列表
+     * @return 是否删除成功
      * @throws Exception
      */
+    @Override
     public int delectCart(List<Long> ids) throws Exception {
         if (ids == null) {
             throw new NullPointerException("ids is null");
         }
         List<Cart> carts = new ArrayList<Cart>();
-        Iterator it = ids.iterator();
-        Cart cart = new Cart();
-        while (it.hasNext()) {
-            cart.setId((Long) it.next());
+        int len = ids.size();
+        while (len-- > 0) {
+            Cart cart = new Cart();
+            cart.setId(ids.get(len));
             carts.add(cart);
         }
 
