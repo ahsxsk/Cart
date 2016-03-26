@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- * Created by MLS on 16/3/25.
+ * Created by shike on 16/3/25.
  */
 @Service("cartService")
 public class CartServiceImpl implements ICartService {
@@ -19,18 +19,18 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 查询购物车信息
-     * @param id 购物车ID
+     * @param cartId 购物车ID
      * @return 购物车信息
      * @throws Exception
      */
     @Override
-    public Cart getCart(Long id) throws Exception {
-        if (id == null) {
+    public Cart getCart(String cartId) throws Exception {
+        if (cartId == null) {
             throw new NullPointerException("id is null!");
         }
         Cart cart = new Cart();
-        cart.setId(id);
-        return cartDao.selectCartById(cart);
+        cart.setCartId(cartId);
+        return cartDao.selectCartByCartId(cart);
     }
 
     /**
@@ -41,7 +41,7 @@ public class CartServiceImpl implements ICartService {
      * @throws Exception
      */
     @Override
-    public List<Cart> getAll(Integer userId, Integer status) throws Exception{
+    public List<Cart> getAll(String userId, Integer status) throws Exception{
         if (userId == null) {
             throw new NullPointerException("userId is null");
         }
@@ -67,7 +67,7 @@ public class CartServiceImpl implements ICartService {
             throw new NullPointerException("cart is null");
         }
 
-        if (cart.getUserId() == null || cart.getSkuId() == null || cart.getShopId() == null) {
+        if (cart.getCartId() == null) {
             throw new IllegalArgumentException("参数异常");
         }
 
@@ -80,26 +80,30 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 更新购物车商品数量
-     * @param id 购物车ID
-     * @param amount 商品数量
-     * @return 是否更新成功
+     * @param userId
+     * @param skuId
+     * @param amount
+     * @return
      * @throws Exception
      */
     @Override
-    public int editSkuAmount(Long id, Integer amount) throws Exception {
-        if (id == null) {
-            throw new NullPointerException("id is null");
+    public int editSkuAmount(String userId, String skuId, Integer amount) throws Exception {
+        if (userId == null) {
+            throw new NullPointerException("userId is null");
         }
-
+        if (skuId == null) {
+            throw new NullPointerException("skuId is null");
+        }
         if (amount == null) {
             throw new NullPointerException("amount is null");
         }
 
         try {
             Cart cart = new Cart();
-            cart.setId(id);
+            cart.setUserId(userId);
+            cart.setSkuId(skuId);
             cart.setAmount(amount);
-            return cartDao.updateCartById(cart);
+            return cartDao.updateCartBySkuId(cart);
         } catch (Exception e) {
             throw new Exception("TODO: CartException");
         }
@@ -107,25 +111,25 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 删除购物车
-     * @param ids 购物车ID列表
+     * @param cartIds 购物车ID列表
      * @return 是否删除成功
      * @throws Exception
      */
     @Override
-    public int delectCart(List<Long> ids) throws Exception {
-        if (ids == null) {
+    public int delectCart(List<String> cartIds) throws Exception {
+        if (cartIds == null) {
             throw new NullPointerException("ids is null");
         }
         List<Cart> carts = new ArrayList<Cart>();
-        int len = ids.size();
+        int len = cartIds.size();
         while (len-- > 0) {
             Cart cart = new Cart();
-            cart.setId(ids.get(len));
+            cart.setCartId(cartIds.get(len));
             carts.add(cart);
         }
 
         try {
-            return cartDao.deleteCartById(carts);
+            return cartDao.deleteCartByCartId(carts);
         } catch (Exception e) {
             throw new Exception("TODO:");
         }

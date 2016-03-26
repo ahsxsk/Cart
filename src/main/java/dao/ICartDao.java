@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by MLS on 16/3/25.
+ * Created by shike on 16/3/25.
  */
 @Repository(value="cartDao")
 public interface ICartDao {
@@ -15,7 +15,7 @@ public interface ICartDao {
      * @param cart
      * @return
      */
-    public Cart selectCartById(Cart cart);
+    public Cart selectCartByCartId(Cart cart);
 
     /**
      * 查询多条Cart信息
@@ -36,12 +36,12 @@ public interface ICartDao {
      * @param cart
      * @return
      */
-    public int updateCartById(Cart cart);
+    public int updateCartBySkuId(Cart cart);
 
     /**
      * 删除购物车
      * @param carts
      * @return
      */
-    public int deleteCartById(List<Cart> carts);
+    public int deleteCartByCartId(List<Cart> carts);
 }

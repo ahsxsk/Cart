@@ -3,28 +3,32 @@
 <mapper namespace="main.java.dao.ICartDao">
     <resultMap id="Cart" type="main.java.model.Cart">
         <id column="id" property="id" jdbcType="BIGINT"></id>
-        <result column="userId" property="userId" jdbcType="INTEGER"></result>
-        <result column="skuId" property="skuId" jdbcType="BIGINT"></result>
+        <result column="cartId" property="cartId" jdbcType="VARCHAR"></result>
+        <result column="shopId" property="shopId" jdbcType="VARCHAR"></result>
+        <result column="skuId" property="skuId" jdbcType="VARCHAR"></result>
         <result column="amount" property="amount" jdbcType="INTEGER"></result>
-        <result column="shopId" property="shopId" jdbcType="INTEGER"></result>
-        <result column="ctime" property="ctime" jdbcType="INTEGER"></result>
+        <result column="price" property="price" jdbcType="INTEGER"></result>
+        <result column="userId" property="userId" jdbcType="VARCHAR"></result>
         <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="createTime" property="createTime" jdbcType="TIMESTAMP"></result>
+        <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP"></result>
+        <result column="description" property="description" jdbcType="VARCHAR"></result>
     </resultMap>
     <sql id="Base_Column_List">
-        id, userId, skuId, amount, shopId, ctime, status
+        id, cartId, shopId, skuId, amount, price, userId, status, createTime, updateTime, description
     </sql>
     <sql id="deleteStatus">
         -1
     </sql>
     <!--根据购物车id查询信息,唯一-->
-    <select id="selectCartById" parameterType="main.java.model.Cart" resultMap="Cart">
+    <select id="selectCartByCartId" parameterType="main.java.model.Cart" resultMap="Cart">
         select <include refid="Base_Column_List"></include>
         from
         t_cart_cart
         where
-            id=#{id, jdbcType=BIGINT}
+            cartId = #{cartId, jdbcType=VARCHAR}
         <if test="status != null">
-            and status=#{status, jdbcType=INTEGER}
+            and status = #{status, jdbcType=INTEGER}
         </if>
     </select>
     <!--根据用户id查询购物车列表-->
@@ -33,9 +37,9 @@
         from
         t_cart_cart
         where
-            userId=#{userId, jdbcType=INTEGER}
+            userId = #{userId, jdbcType=VARCHAR}
         <if test="status != null">
-            and status=#{status, jdbcType=INTEGER}
+            and status = #{status, jdbcType=VARCHAR}
         </if>
     </select>
     <!--插入一条信息-->
@@ -43,8 +47,11 @@
             keyProperty="id">
         insert into t_cart_cart
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="userId != null">
-                userId,
+            <if test="cartId != null">
+                cartId,
+            </if>
+            <if test="shopId != null">
+                shopId,
             </if>
             <if test="skuId != null">
                 skuId,
@@ -52,54 +59,76 @@
             <if test="amount != null">
                 amount,
             </if>
-            <if test="shopId != null">
-                shopId,
+            <if test="price != null">
+                price,
             </if>
-            <if test="ctime != null">
-                ctime,
+            <if test="userId != null">
+                userId,
             </if>
             <if test="status != null">
-                status
+                status,
             </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="description != null">
+                description
+            </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="userId != null">
-                #{userId, jdbcType=INTEGER},
-            </if>
-            <if test="skuId != null">
-                #{skuId, jdbcType=BIGINT},
-            </if>
-            <if test="amount != null">
-                #{amount, jdbcType=INTEGER},
+            <if test="cartId != null">
+                #{cartId},
             </if>
             <if test="shopId != null">
-                #{shopId, jdbcType=INTEGER},
+                #{shopId},
             </if>
-            <if test="ctime != null">
-                #{ctime, jdbcType=INTEGER},
+            <if test="skuId != null">
+                #{skuId},
+            </if>
+            <if test="amount != null">
+                #{amount},
+            </if>
+            <if test="price != null">
+                #{price},
+            </if>
+            <if test="userId != null">
+                #{userId},
             </if>
             <if test="status != null">
-                #{status, jdbcType=INTEGER}
+                #{status},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="description != null">
+                #{description}
             </if>
         </trim>
     </insert>
     <!--更新购物车商品数量-->
-    <update id="updateCartById" parameterType="main.java.model.Cart">
+    <update id="updateCartBySkuId" parameterType="main.java.model.Cart">
         update t_cart_cart
         <set>
             amount = #{amount, jdbcType=INTEGER}
         </set>
-        where id = #{id, jdbcType=BIGINT} and status >= 0
+        where userId = #{userId} and skuId= #{skuId} and status = 0
     </update>
     <!--删除购物车-->
-    <update id="deleteCartById" parameterType="main.java.model.Cart">
+    <update id="deleteCartByCartId" parameterType="main.java.model.Cart">
         update t_cart_cart
         <set>
             status = <include refid="deleteStatus"></include>
         </set>
-        where id in
+        where cartId in
         <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
-            #{item.id, jdbcType=BIGINT}
+            #{item.cartId, jdbcType=BIGINT}
         </foreach>
     </update>
 </mapper>
