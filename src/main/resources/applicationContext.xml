@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+        <!--自动扫描-->
+       <context:component-scan base-package="main.*"></context:component-scan>
+        <!--引入配置文件-->
+        <bean id="propertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="location" value="classpath:main/resources/jdbc.properties"></property>
+        </bean>
+
+        <bean id="cartDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+            <property name="driverClass" value="${cart.master.jdbc.driver}"></property>
+            <property name="jdbcUrl" value="${cart.master.jdbc.url}"></property>
+            <property name="user" value="${cart.master.jdbc.username}"></property>
+            <property name="password" value="${cart.master.jdbc.password}"></property>
+            <property name="acquireIncrement" value="${c3p0.acquireIncrement}"></property>
+            <property name="initialPoolSize" value="${c3p0.initialPoolSize}"></property>
+            <property name="maxIdleTime" value="${c3p0.maxIdleTime}"></property>
+            <property name="maxPoolSize" value="${c3p0.maxPoolSize}"></property>
+            <property name="minPoolSize" value="${c3p0.minPoolSize}"></property>
+            <property name="acquireRetryDelay" value="1000"></property>
+            <property name="acquireRetryAttempts" value="3600"></property>
+            <property name="breakAfterAcquireFailure" value="false"></property>
+            <property name="testConnectionOnCheckin" value="true"></property>
+            <property name="preferredTestQuery" value="select 1"></property>
+        </bean>
+        <!--<bean name="cartDataSource2" class="org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource">-->
+            <!--<property name="targetDataSources">-->
+                <!--<map></map>-->
+            <!--</property>-->
+        <!--</bean>-->
+        <!--spring mybatis整合, 不需要mybatis的配置映射文件-->
+        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+                <property name="dataSource" ref="cartDataSource"></property>
+                <property name="configLocation" value="classpath:main/resources/mybatis-config.xml" />
+                <!--自动扫描mapper配置文件-->
+                <property name="mapperLocations" value="classpath:main/resources/CartMapper.xml"></property>
+        </bean>
+
+
+        <!--DAO接口所在包名, Spring自动查找下面的类-->
+        <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+            <property name="basePackage" value="main.java.dao"></property>
+            <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        </bean>
+
+        <!--事务管理-->
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="cartDataSource"></property>
+        </bean>
+</beans>

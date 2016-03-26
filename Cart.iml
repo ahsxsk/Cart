@@ -26,5 +26,12 @@
     <orderEntry type="library" exported="" name="Spring MVC-4.2.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="org.mybatis:mybatis:3.0.6" level="project" />
     <orderEntry type="library" exported="" name="mysql:mysql-connector-java:5.1.38" level="project" />
+    <orderEntry type="library" exported="" name="org.mybatis:mybatis-spring:1.2.4" level="project" />
+    <orderEntry type="library" exported="" name="c3p0:c3p0:0.9.1.2" level="project" />
+    <orderEntry type="library" exported="" name="org.springframework:spring-jdbc:4.2.0.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" exported="" name="junit:junit:4.12" level="project" />
+    <orderEntry type="library" exported="" name="cglib:cglib:3.2.0" level="project" />
+    <orderEntry type="library" exported="" name="com.github.miemiedev:mybatis-paginator:1.2.17" level="project" />
   </component>
 </module>
