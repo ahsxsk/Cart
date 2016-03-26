@@ -18,6 +18,6 @@
 | price      | int       |商品价格|
 | userId     | varchar   |用户ID|
 | status     | tinyint   |购物车状态，0正常， -1删除|
-| crateTime  | datetime  |加车时间|
+| crateTime  | timestamp  |加车时间|
 | description| varchar   |保留使用|
-| updateTime | datetime  | 更新时间|
+| updateTime | timestamp  | 更新时间|
