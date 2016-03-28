@@ -1,7 +1,6 @@
 package main.java.service;
 
 import main.java.model.Cart;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
