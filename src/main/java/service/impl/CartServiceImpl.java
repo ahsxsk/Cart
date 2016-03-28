@@ -3,7 +3,6 @@ package main.java.service.impl;
 import main.java.dao.ICartDao;
 import main.java.model.Cart;
 import main.java.service.ICartService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
