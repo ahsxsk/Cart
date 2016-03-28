@@ -1,12 +1,12 @@
-package main.java.model;
+package main.java.service;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * 操作结果
- * Created by shike on 16/3/27.
+ * Created by shike on 16/3/28.
  */
-public class Result {
+public abstract class AbstractReturn {
     //标志
     private Boolean flag;
     //错误码

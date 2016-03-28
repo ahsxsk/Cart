@@ -38,8 +38,27 @@
       <root url="jar://$PROJECT_DIR$/lib/spring-web-3.0.0.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/aopalliance-1.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/servlet-api-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mybatis-paginator-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mybatis-3.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/logback-classic-1.0.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/logback-core-1.0.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-webmvc-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-asm-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-beans-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-core-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-context-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-expression-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-web-3.0.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/aopalliance-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/servlet-api-2.4.jar!/" />
     </CLASSES>
     <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/mybatis-paginator-1.2.17-javadoc.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/mybatis-paginator-1.2.17-javadoc.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/mybatis-paginator-1.2.17-javadoc.jar!/" />
     </JAVADOC>

@@ -6,6 +6,7 @@ package main.java.common;
  */
 public enum  ExceptionEnum {
     UNKOWN(1000001, "未知"),
+    WRONGTYPE(1000002, "类型错误"),
     SUCCESS(100000, "成功"),
 
     PARAM_NULL(110000, "参数不能为空");
