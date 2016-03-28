@@ -10,6 +10,10 @@
           <option name="url" value="https://github.com/ahsxsk/SpringMVC-Spring-MyBatis" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/ahsxsk/Cart.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="$USER_HOME$/shike/cart" />
