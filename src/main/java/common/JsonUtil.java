@@ -3,6 +3,7 @@ package main.java.common;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,15 +20,27 @@ public final class JsonUtil {
     private JsonUtil() {
     }
 
+
     /**
      * 对象转Json
-     * @param src 多想
+     * @param src 对象
      * @param <T> 引用类型
      * @return 返回json
      * @throws IOException
      */
     public static <T> String toJson(T src) throws IOException {
         return src instanceof String ? (String) src : MAPPER.writeValueAsString(src);
+    }
+    /**
+     * 将json通过类型转换成对象
+     *
+     * @param json          json字符串
+     * @param typeReference 引用类型
+     * @return 返回对象
+     * @throws IOException
+     */
+    public static <T> T fromJson(String json, TypeReference<?> typeReference) throws IOException {
+        return (T) (typeReference.getType().equals(String.class) ? json : MAPPER.readValue(json, typeReference));
     }
     /**
      * 通过Inclusion创建ObjectMapper对象

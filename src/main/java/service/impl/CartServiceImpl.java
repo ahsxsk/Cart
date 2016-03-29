@@ -65,12 +65,25 @@ public class CartServiceImpl implements ICartService {
         if (cart == null) {
             throw new NullPointerException("cart is null");
         }
-
-        if (cart.getCartId() == null) {
+        String cartId = cart.getCartId();
+        String skuId = cart.getSkuId();
+        String userId = cart.getUserId();
+        Integer status = cart.getStatus();
+        if (cartId == null || skuId == null || userId == null || status < 0) {
             throw new IllegalArgumentException("参数异常");
         }
 
         try {
+            List<Cart> carts = getAll(userId, status); //获取用户购物车商品列表
+            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
+            if (len != 0) {
+                while (len-- > 0) {
+                    if (carts.get(len).getSkuId().equals(skuId)) {
+                        Integer amount = carts.get(len).getAmount() + 1;
+                        return editSkuAmount(userId, skuId, amount);
+                    }
+                }
+            }
             return cartDao.insertCart(cart);
         } catch (Exception e) {
             throw new Exception("TODO: CartException");
