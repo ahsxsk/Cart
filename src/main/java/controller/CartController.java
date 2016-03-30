@@ -6,6 +6,7 @@ import main.java.model.Cart;
 import main.java.service.GetReturn;
 import main.java.service.ICartService;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -274,16 +275,22 @@ public class CartController extends AbstractCtl {
         return resultStr;
     }
 
-    private Cart constructAddParam(Map<String, String> param) {
+    private Cart constructAddParam(Map<String, String> param) throws Exception {
         Cart cart = new Cart();
-        String cartId = param.get("cartId"); //购物车Id
-        String shopId = param.get("shopId"); //shopId
+        IdGenerator idGenerator = IdGenerator.getIdGenerator();
         String userId = param.get("userId"); //用户Id
+        try {
+            String cartId = idGenerator.getId(userId).toString();//购物车Id
+            cart.setCartId(cartId);
+        } catch (Exception e) {
+            logger.error("get cart id error");
+            throw e;
+        }
+        String shopId = param.get("shopId"); //shopId
         Integer price = Integer.parseInt(param.get("price")); //商品价格
         Integer amount = Integer.parseInt(param.get("amount")); //商品数量
         String skuId = param.get("skuId"); //skuId
         Integer status = Integer.parseInt(param.get("status"));
-        cart.setCartId(cartId);
         cart.setSkuId(skuId);
         cart.setShopId(shopId);
         cart.setUserId(userId);

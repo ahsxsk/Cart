@@ -86,14 +86,14 @@ public final class ValidateUtils {
         if (param == null || param.size() == 0) {
             return Boolean.FALSE;
         }
-        String cartId = param.get("cartId"); //购物车Id
+        //String cartId = param.get("cartId"); //购物车Id
         String shopId = param.get("skuId"); //skuId
         String userId = param.get("userId"); //用户Id
         String price = param.get("price"); //商品价格
         String amount = param.get("amount"); //商品数量
         String skuId = param.get("skuId");
         String status = param.get("status");
-        if (cartId == null || shopId == null || userId == null || price == null
+        if (shopId == null || userId == null || price == null
                 || amount == null || skuId == null || status == null) {
             return Boolean.FALSE;
         }
