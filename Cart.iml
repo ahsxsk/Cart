@@ -51,15 +51,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/pay-redis-utils-api-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/shike/JedisZset/out/artifacts/JedisCart_jar/JedisZset.jar!/" />
         </CLASSES>
         <JAVADOC />

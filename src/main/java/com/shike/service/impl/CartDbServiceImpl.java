@@ -1,12 +1,10 @@
 package com.shike.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.shike.common.IdGenerator;
 import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
-import com.shike.vo.CartAddParam;
+import com.shike.service.CartDbService;
 import com.shike.vo.CartQuery;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.shike.service.ICartService;
 
@@ -17,19 +15,14 @@ import java.util.List;
 /**
  * Created by shike on 16/3/25.
  */
-@Service("cartService")
-public class CartServiceImpl implements ICartService {
-    private static Logger logger = Logger.getLogger(CartServiceImpl.class);
+@Service("cartDbService")
+public class CartDbServiceImpl implements CartDbService {
     @Resource(name = "cartDao")
     private ICartDao cartDao;
 
-    @Resource(name = "cartRedisService")
-    private CartRedisServiceImpl cartRedisService;
-    @Resource(name = "cartDbService")
-    private CartDbServiceImpl cartDbService;
     /**
      * 查询购物车信息
-     * @param cartQuery
+     * @param cartQuery 购物车ID
      * @return 购物车信息
      * @throws Exception
      */
@@ -37,15 +30,7 @@ public class CartServiceImpl implements ICartService {
         if (cartQuery == null) {
             throw new NullPointerException("cartQuery is null!");
         }
-        Cart cartInfo = cartRedisService.getCart(cartQuery); //先查Redis
-        if (cartInfo == null) { //Redis没有,查DB,然后回灌Redis
-            cartInfo = cartDbService.getCart(cartQuery);
-            if (cartInfo != null) { //回写Redis
-                CartAddParam cartAddParam = transCart2CartAddParam(cartInfo);
-                cartRedisService.addCart(cartAddParam);
-            }
-        }
-        return cartInfo;
+        return cartDao.selectCartByCartId(cartQuery);
     }
 
     /**
@@ -164,25 +149,5 @@ public class CartServiceImpl implements ICartService {
         } catch (Exception e) {
             throw new Exception("TODO:");
         }
-    }
-
-    private CartAddParam transCart2CartAddParam(Cart cart) {
-        if (cart == null) {
-            return null;
-        }
-        CartAddParam cartAddParam = new CartAddParam();
-        try {
-            cartAddParam.setCartId(cart.getCartId());
-            cartAddParam.setDescription(cart.getDescription());
-            cartAddParam.setShopId(cart.getShopId());
-            cartAddParam.setSkuId(cart.getSkuId());
-            cartAddParam.setStatus(cart.getStatus());
-            cartAddParam.setPrice(cart.getPrice());
-            cartAddParam.setAmount(cart.getAmount());
-            cartAddParam.setUserId(cart.getUserId());
-        } catch (Exception ex) {
-            logger.error("CartServiceImpl.transCart2CartAddParam() | Exception: " + ex.getMessage());
-        }
-        return  cartAddParam;
     }
 }

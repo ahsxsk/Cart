@@ -1,5 +1,6 @@
 import com.alibaba.fastjson.JSON;
 import com.shike.controller.CartController;
+import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.junit.*;
 import org.junit.Test;
@@ -24,19 +25,22 @@ public class TestController {
 
     @Resource
     private CartController cartController;
-//    @org.junit.Test
-//    public void testQuery() {
-//        MockHttpServletRequest request = new MockHttpServletRequest();
-//        MockHttpServletResponse response = new MockHttpServletResponse();
-//        try {
-//            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
-//            request.setMethod("POST");
-//            request.setParameter("cartId", "6");
-//            cartController.getCart(request,response);
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//    }
+    @org.junit.Test
+    public void testQuery() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        try {
+            CartQuery cartQuery = new CartQuery();
+            cartQuery.setCartId("201603302225374181102200000012");
+            String cart = JSON.toJSONString(cartQuery);
+            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
+            request.setMethod("POST");
+            request.setParameter("cartQuery", cart);
+            cartController.getCart(request,response);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 //
 //    @Test
 //    public void testList() {
@@ -69,25 +73,25 @@ public class TestController {
 //        }
 //    }
 
-    @Test
-    public void testAdd() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        try {
-            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
-            request.setMethod("POST");
-            request.setParameter("userId", "user00001");
-            request.setParameter("amount", "1");
-            request.setParameter("skuId", "sku0010");
-            request.setParameter("price", "1000");
-            //request.setParameter("cartId", "2016032900001");
-            request.setParameter("shopId", "shop0002");
-            request.setParameter("status", "0");
-            cartController.addCart(request,response);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+//    @Test
+//    public void testAdd() {
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        MockHttpServletResponse response = new MockHttpServletResponse();
+//        try {
+//            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
+//            request.setMethod("POST");
+//            request.setParameter("userId", "user00001");
+//            request.setParameter("amount", "1");
+//            request.setParameter("skuId", "sku0010");
+//            request.setParameter("price", "1000");
+//            //request.setParameter("cartId", "2016032900001");
+//            request.setParameter("shopId", "shop0002");
+//            request.setParameter("status", "0");
+//            cartController.addCart(request,response);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//    }
 
 //    @Test
 //    public void testDel() {

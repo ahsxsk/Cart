@@ -1,6 +1,7 @@
 package com.shike.dao;
 
 import com.shike.model.Cart;
+import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,17 +13,17 @@ import java.util.List;
 public interface ICartDao {
     /**
      * 查询单条Cart信息
-     * @param cart
+     * @param cartQuery
      * @return
      */
-    public Cart selectCartByCartId(Cart cart);
+    public Cart selectCartByCartId(CartQuery cartQuery);
 
     /**
      * 查询多条Cart信息
-     * @param cart
+     * @param cartQuery
      * @return
      */
-    public List<Cart> selectCartByUserId(Cart cart);
+    public List<Cart> selectCartByUserId(CartQuery cartQuery);
 
     /**
      * 插入一条Cart信息

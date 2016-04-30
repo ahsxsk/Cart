@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 购物车服务基本操作
+ * DB购物车服务基本操作
  * Created by shike on 16/3/25.
  */
 @Service
-public interface ICartService {
+public interface CartDbService {
     /**
      * 根据购物车ID获取购物车信息
      * @param cartQuery
-     * @return 购物车信息
+     * @return Cart 购物车信息
      */
     public Cart getCart(CartQuery cartQuery) throws Exception;
 
@@ -54,3 +54,4 @@ public interface ICartService {
 
 
 }
+

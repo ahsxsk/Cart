@@ -4,6 +4,9 @@ import com.shike.common.ExceptionEnum;
 import com.shike.common.HttpUtils;
 import com.shike.common.JsonUtils;
 import com.shike.model.Cart;
+import com.shike.service.CartRedisService;
+import com.shike.service.impl.CartRedisServiceImpl;
+import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,9 +73,10 @@ public class CartController extends AbstractCtl {
                         ExceptionEnum.PARAM_NULL.value()
                 );
             } else { //判断类型
-                cartInfo = cartService.getCart(paramMap.get("cartId"));
+                CartQuery cartQuery = JSON.parseObject(paramMap.get("cartQuery"), CartQuery.class);
+                cartInfo = cartService.getCart(cartQuery);
             }
-            resultStr = constructResult(cartInfo,getReturn);
+            resultStr = constructResult(cartInfo, getReturn);
             logger.info("CartController.getCart() | result:" + resultStr);
             response.getOutputStream().write(resultStr.getBytes());
         } catch (Exception e) {

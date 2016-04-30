@@ -17,18 +17,18 @@ import java.util.List;
 public class Test {
     @Resource(name = "cartService")
     private ICartService cartService = null;
-    @org.junit.Test
-    public void test() {
-        try {
-            String cartId = "1";
-            Cart ret = cartService.getCart(cartId);
-            System.out.println("Amount:" + ret.getAmount());
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace());
-            System.out.println(e.getClass());
-            System.out.println(e.getMessage());
-        }
-    }
+//    @org.junit.Test
+//    public void test() {
+//        try {
+//            String cartId = "1";
+//            Cart ret = cartService.getCart(cartId);
+//            System.out.println("Amount:" + ret.getAmount());
+//        } catch (Exception e) {
+//            System.out.println(e.getStackTrace());
+//            System.out.println(e.getClass());
+//            System.out.println(e.getMessage());
+//        }
+//    }
     @org.junit.Test
     public void testGetAll() {
         try {
@@ -44,44 +44,44 @@ public class Test {
         }
     }
 
-    @org.junit.Test
-    public void testAddCart() {
-        try {
-            Cart cart = new Cart();
-            cart.setCartId("201603260002");
-            cart.setShopId("shop10001");
-            cart.setSkuId("sku0001");
-            cart.setAmount(1);
-            cart.setPrice(10000);
-            cart.setUserId("user00001");
-            cart.setStatus(0);
-            cart.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            cart.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            cart.setDescription(new String("red"));
-            System.out.println(cartService.addCart(cart));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @org.junit.Test
-    public void testEditNum() {
-        try {
-            cartService.editSkuAmount("user00001", "sku0001", 53);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @org.junit.Test
-    public void testDeleteCart() {
-        try {
-            List<String> ids = new ArrayList<String>();
-            ids.add("1");
-            ids.add("2");
-            cartService.delectCart(ids);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @org.junit.Test
+//    public void testAddCart() {
+//        try {
+//            Cart cart = new Cart();
+//            cart.setCartId("201603260002");
+//            cart.setShopId("shop10001");
+//            cart.setSkuId("sku0001");
+//            cart.setAmount(1);
+//            cart.setPrice(10000);
+//            cart.setUserId("user00001");
+//            cart.setStatus(0);
+//            cart.setCreateTime(new Timestamp(System.currentTimeMillis()));
+//            cart.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+//            cart.setDescription(new String("red"));
+//            System.out.println(cartService.addCart(cart));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @org.junit.Test
+//    public void testEditNum() {
+//        try {
+//            cartService.editSkuAmount("user00001", "sku0001", 53);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @org.junit.Test
+//    public void testDeleteCart() {
+//        try {
+//            List<String> ids = new ArrayList<String>();
+//            ids.add("1");
+//            ids.add("2");
+//            cartService.delectCart(ids);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

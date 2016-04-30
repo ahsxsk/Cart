@@ -9,9 +9,9 @@ import java.text.SimpleDateFormat;
  * Id生成器
  * 构成:
  * 1 ms级时间 17位 20160329201902024
- * 2 IDC标志位 2位 12
- * 3 服务器标志位 3位 002
- * 4 流水码 4位 0-4095 仿Twitter snowflake ms内最多产生4096的seq
+ * 2 流水码 4位 0-4095 仿Twitter snowflake ms内最多产生4096的seq
+ * 3 IDC标志位 2位 12
+ * 4 服务器标志位 3位 002
  * 5 用户Id埋点 4位 (userId: 23423423454) 2345 交易场景下根据userId查询较多,方便分表
  * Created by shike on 16/3/29.
  */
@@ -79,7 +79,7 @@ public final class IdGenerator {
         String seqStr = String.valueOf(this.sequence);
         seqStr = org.apache.commons.lang3.StringUtils.leftPad(seqStr,4,"0"); //补齐4位
 
-        id = id.append(time).append(this.idc).append(this.server).append(seqStr).append(uid);
+        id = id.append(time).append(seqStr).append(this.idc).append(this.server).append(uid);
         uid = null; //help GC
         seqStr = null;
         return id;

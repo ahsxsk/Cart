@@ -21,7 +21,7 @@
         -1
     </sql>
     <!--根据购物车id查询信息,唯一-->
-    <select id="selectCartByCartId" parameterType="com.shike.model.Cart" resultMap="Cart">
+    <select id="selectCartByCartId" parameterType="com.shike.vo.CartQuery" resultMap="Cart">
         select <include refid="Base_Column_List"></include>
         from
         t_cart_cart
@@ -32,7 +32,7 @@
         </if>
     </select>
     <!--根据用户id查询购物车列表-->
-    <select id="selectCartByUserId" parameterType="com.shike.model.Cart" resultMap="Cart">
+    <select id="selectCartByUserId" parameterType="com.shike.vo.CartQuery" resultMap="Cart">
         select <include refid="Base_Column_List"></include>
         from
         t_cart_cart

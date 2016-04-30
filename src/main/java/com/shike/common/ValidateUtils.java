@@ -1,5 +1,8 @@
 package com.shike.common;
 
+import com.alibaba.fastjson.JSON;
+import com.shike.vo.CartQuery;
+
 import java.util.List;
 import java.util.Map;
 /**
@@ -40,7 +43,11 @@ public final class ValidateUtils {
      * @return Boolean
      */
     private static Boolean validateGetCart(Map<String,String> param) {
-        if (param == null || param.size() == 0 || param.get("cartId") == null) {
+        if (param == null || param.size() == 0 || param.get("cartQuery") == null) {
+            return Boolean.FALSE;
+        }
+        CartQuery cartQuery = JSON.parseObject(param.get("cartQuery"), CartQuery.class);
+        if(cartQuery.getCartId() == null) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
