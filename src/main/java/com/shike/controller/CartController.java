@@ -116,13 +116,11 @@ public class CartController extends AbstractCtl {
                         ExceptionEnum.PARAM_NULL.value()
                 );
             } else {
-                String userId = paramMap.get("userId");
-                String status = paramMap.get("status");
-                carts = cartService.getAll(userId, Integer.parseInt(status));
+                CartQuery cartQuery = JSON.parseObject(paramMap.get("cartQuery"), CartQuery.class);
+                carts = cartService.getAll(cartQuery);
             }
             resultStr = constructResult(carts,getReturn);
             logger.info("CartController.getCart() | result:" + resultStr);
-            System.out.println(resultStr);
             response.getOutputStream().write(resultStr.getBytes());
         } catch (Exception e) {
             logger.error("CartController.getCart() | Exception:" + e.getMessage());

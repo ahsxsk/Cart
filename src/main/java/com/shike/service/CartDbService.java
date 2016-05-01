@@ -21,11 +21,10 @@ public interface CartDbService {
 
     /**
      * 查询多条Cart信息,即购物车列表
-     * @param userId
-     * @param status
+     * @param cartQuery
      * @return
      */
-    public List<Cart> getAll(String userId, Integer status) throws Exception;
+    public List<Cart> getAll(CartQuery cartQuery) throws Exception;
 
     /**
      * 加车

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JedisZset">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/shike/JedisZset/out/artifacts/JedisCart_jar/JedisZset.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

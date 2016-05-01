@@ -59,7 +59,11 @@ public final class ValidateUtils {
      * @return Boolean
      */
     private static Boolean validateGetAll(Map<String, String> param) {
-        if (param == null || param.size() == 0 || param.get("userId") == null || param.get("status") == null) {
+        if (param == null || param.size() == 0 || param.get("cartQuery") == null) {
+            return Boolean.FALSE;
+        }
+        CartQuery cartQuery = JSON.parseObject(param.get("cartQuery"), CartQuery.class);
+        if(cartQuery.getUserId() == null || cartQuery.getStatus() == null) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;

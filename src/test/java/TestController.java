@@ -25,37 +25,40 @@ public class TestController {
 
     @Resource
     private CartController cartController;
-    @org.junit.Test
-    public void testQuery() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        try {
-            CartQuery cartQuery = new CartQuery();
-            cartQuery.setCartId("201603302225374181102200000012");
-            String cart = JSON.toJSONString(cartQuery);
-            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
-            request.setMethod("POST");
-            request.setParameter("cartQuery", cart);
-            cartController.getCart(request,response);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-//
-//    @Test
-//    public void testList() {
+//    @org.junit.Test
+//    public void testQuery() {
 //        MockHttpServletRequest request = new MockHttpServletRequest();
 //        MockHttpServletResponse response = new MockHttpServletResponse();
 //        try {
+//            CartQuery cartQuery = new CartQuery();
+//            cartQuery.setCartId("201603302225374181102200000012");
+//            String cart = JSON.toJSONString(cartQuery);
 //            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
 //            request.setMethod("POST");
-//            request.setParameter("userId", "user00001");
-//            request.setParameter("status", "0");
-//            cartController.getAll(request,response);
+//            request.setParameter("cartQuery", cart);
+//            cartController.getCart(request,response);
 //        } catch (Exception e) {
 //            logger.error(e.getMessage(), e);
 //        }
 //    }
+//
+    @Test
+    public void testList() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        try {
+            CartQuery cartQuery = new CartQuery();
+            cartQuery.setUserId("user00001");
+            cartQuery.setStatus(0);
+            String cart = JSON.toJSONString(cartQuery);
+            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
+            request.setMethod("POST");
+            request.setParameter("cartQuery", cart);
+            cartController.getAll(request,response);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 //
 //    @Test
 //    public void testEdit() {

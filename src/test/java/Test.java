@@ -29,20 +29,20 @@ public class Test {
 //            System.out.println(e.getMessage());
 //        }
 //    }
-    @org.junit.Test
-    public void testGetAll() {
-        try {
-            String uid = "user0001";
-            Integer status = 0;
-            List<Cart> ret = cartService.getAll(uid,status);
-            int len = ret.size();
-            while (len-- > 0) {
-                System.out.println(ret.get(len).getId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @org.junit.Test
+//    public void testGetAll() {
+//        try {
+//            String uid = "user0001";
+//            Integer status = 0;
+//            List<Cart> ret = cartService.getAll(uid,status);
+//            int len = ret.size();
+//            while (len-- > 0) {
+//                System.out.println(ret.get(len).getId());
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 //    @org.junit.Test
 //    public void testAddCart() {

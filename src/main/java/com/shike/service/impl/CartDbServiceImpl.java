@@ -5,6 +5,7 @@ import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
 import com.shike.service.CartDbService;
 import com.shike.vo.CartQuery;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.shike.service.ICartService;
 
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Service("cartDbService")
 public class CartDbServiceImpl implements CartDbService {
+    private static Logger logger = Logger.getLogger(CartDbServiceImpl.class);
     @Resource(name = "cartDao")
     private ICartDao cartDao;
 
@@ -28,29 +30,31 @@ public class CartDbServiceImpl implements CartDbService {
      */
     public Cart getCart(CartQuery cartQuery) throws Exception {
         if (cartQuery == null) {
+            logger.error("CartDbServiceImpl.getCart() | error:cartQuery is null!");
             throw new NullPointerException("cartQuery is null!");
+        }
+        if (cartQuery.getCartId() == null) {
+            logger.error("CartDbServiceImpl.getCart() | error:cartId is null!");
+            throw new NullPointerException("cartId is null!");
         }
         return cartDao.selectCartByCartId(cartQuery);
     }
 
     /**
      * 获取购物车列表
-     * @param userId 用户ID
-     * @param status 购物车状态 0:正常 -1:删除
+     * @param cartQuery
      * @return 购物车列表
      * @throws Exception
      */
-    public List<Cart> getAll(String userId, Integer status) throws Exception{
-        if (userId == null) {
+    public List<Cart> getAll(CartQuery cartQuery) throws Exception{
+        if (cartQuery == null) {
+            logger.error("CartDbServiceImpl.getAll() | error:cartQuery is null!");
+            throw new NullPointerException("cartQuery is null");
+        }
+        if (cartQuery.getUserId() == null) {
+            logger.error("CartDbServiceImpl.getAll() | error:userId is null!");
             throw new NullPointerException("userId is null");
         }
-
-        if (status == null) {
-            throw new NullPointerException("status is null");
-        }
-        CartQuery cartQuery = new CartQuery();
-        cartQuery.setUserId(userId);
-        cartQuery.setStatus(status);
         return cartDao.selectCartByUserId(cartQuery);
     }
 
@@ -71,29 +75,30 @@ public class CartDbServiceImpl implements CartDbService {
             throw new IllegalArgumentException("参数异常");
         }
 
-        try {
-            List<Cart> carts = getAll(userId, status); //获取用户购物车商品列表
-            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
-            if (len != 0) {
-                while (len-- > 0) {
-                    if (carts.get(len).getSkuId().equals(skuId)) {
-                        Integer amount = carts.get(len).getAmount() + 1;
-                        return editSkuAmount(userId, skuId, amount);
-                    }
-                }
-            }
-            IdGenerator idGenerator = IdGenerator.getIdGenerator();
-            try {
-                String cartId = idGenerator.getId(userId).toString();//购物车Id
-                cart.setCartId(cartId);
-            } catch (Exception e) {
-                //TODO
-                throw e;
-            }
-            return cartDao.insertCart(cart);
-        } catch (Exception e) {
-            throw new Exception("TODO: CartException");
-        }
+//        try {
+////            List<Cart> carts = getAll(); //获取用户购物车商品列表
+////            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
+////            if (len != 0) {
+////                while (len-- > 0) {
+////                    if (carts.get(len).getSkuId().equals(skuId)) {
+////                        Integer amount = carts.get(len).getAmount() + 1;
+////                        return editSkuAmount(userId, skuId, amount);
+////                    }
+////                }
+//            }
+//            IdGenerator idGenerator = IdGenerator.getIdGenerator();
+//            try {
+//                String cartId = idGenerator.getId(userId).toString();//购物车Id
+//                cart.setCartId(cartId);
+//            } catch (Exception e) {
+//                //TODO
+//                throw e;
+//            }
+//            return cartDao.insertCart(cart);
+//        } catch (Exception e) {
+//            throw new Exception("TODO: CartException");
+//        }
+        return 1;
     }
 
     /**

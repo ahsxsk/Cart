@@ -1,7 +1,9 @@
 package com.shike.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.shike.cart.redis.exception.RedisException;
 import com.shike.common.IdGenerator;
+import com.shike.common.TransUtils;
 import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
@@ -12,6 +14,8 @@ import com.shike.service.ICartService;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -35,14 +39,16 @@ public class CartServiceImpl implements ICartService {
      */
     public Cart getCart(CartQuery cartQuery) throws Exception {
         if (cartQuery == null) {
+            logger.error("CartServiceImpl.getCart() | error:cartQuery is null!");
             throw new NullPointerException("cartQuery is null!");
         }
         Cart cartInfo = cartRedisService.getCart(cartQuery); //先查Redis
         if (cartInfo == null) { //Redis没有,查DB,然后回灌Redis
             cartInfo = cartDbService.getCart(cartQuery);
             if (cartInfo != null) { //回写Redis
-                CartAddParam cartAddParam = transCart2CartAddParam(cartInfo);
-                cartRedisService.addCart(cartAddParam);
+                List<Cart> carts = new LinkedList<Cart>();
+                carts.add(cartInfo);
+                writeRedisWithDb(carts);
             }
         }
         return cartInfo;
@@ -50,23 +56,29 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 获取购物车列表
-     * @param userId 用户ID
-     * @param status 购物车状态 0:正常 -1:删除
+     * @param cartQuery
      * @return 购物车列表
      * @throws Exception
      */
-    public List<Cart> getAll(String userId, Integer status) throws Exception{
+    public List<Cart> getAll(CartQuery cartQuery) throws Exception{
+        if (cartQuery == null) {
+            logger.error("CartServiceImpl.getAll() | error:cartQuery is null!");
+            throw new NullPointerException("cartQuery is null");
+        }
+        String userId = cartQuery.getUserId();
         if (userId == null) {
+            logger.error("CartServiceImpl.getAll() | error:userId is null!");
             throw new NullPointerException("userId is null");
         }
+        List<Cart> carts = cartRedisService.getAll(cartQuery); //先查Redis, 查不到时返回空的List
+        if (carts == null || carts.isEmpty()) { //Redis没查到, 查DB,回写Redis
+            carts = cartDbService.getAll(cartQuery);
 
-        if (status == null) {
-            throw new NullPointerException("status is null");
+            if (carts != null) { //回写Redis
+                writeRedisWithDb(carts);
+            }
         }
-        CartQuery cartQuery = new CartQuery();
-        cartQuery.setUserId(userId);
-        cartQuery.setStatus(status);
-        return cartDao.selectCartByUserId(cartQuery);
+        return carts;
     }
 
     /**
@@ -86,29 +98,30 @@ public class CartServiceImpl implements ICartService {
             throw new IllegalArgumentException("参数异常");
         }
 
-        try {
-            List<Cart> carts = getAll(userId, status); //获取用户购物车商品列表
-            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
-            if (len != 0) {
-                while (len-- > 0) {
-                    if (carts.get(len).getSkuId().equals(skuId)) {
-                        Integer amount = carts.get(len).getAmount() + 1;
-                        return editSkuAmount(userId, skuId, amount);
-                    }
-                }
-            }
-            IdGenerator idGenerator = IdGenerator.getIdGenerator();
-            try {
-                String cartId = idGenerator.getId(userId).toString();//购物车Id
-                cart.setCartId(cartId);
-            } catch (Exception e) {
-                //TODO
-                throw e;
-            }
-            return cartDao.insertCart(cart);
-        } catch (Exception e) {
-            throw new Exception("TODO: CartException");
-        }
+//        try {
+//            List<Cart> carts = getAll(userId, status); //获取用户购物车商品列表
+//            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
+//            if (len != 0) {
+//                while (len-- > 0) {
+//                    if (carts.get(len).getSkuId().equals(skuId)) {
+//                        Integer amount = carts.get(len).getAmount() + 1;
+//                        return editSkuAmount(userId, skuId, amount);
+//                    }
+//                }
+//            }
+//            IdGenerator idGenerator = IdGenerator.getIdGenerator();
+//            try {
+//                String cartId = idGenerator.getId(userId).toString();//购物车Id
+//                cart.setCartId(cartId);
+//            } catch (Exception e) {
+//                //TODO
+//                throw e;
+//            }
+//            return cartDao.insertCart(cart);
+//        } catch (Exception e) {
+//            throw new Exception("TODO: CartException");
+//        }
+        return 1;
     }
 
     /**
@@ -166,23 +179,26 @@ public class CartServiceImpl implements ICartService {
         }
     }
 
-    private CartAddParam transCart2CartAddParam(Cart cart) {
-        if (cart == null) {
-            return null;
+
+    /**
+     * 使用DB数据回写Redis
+     * @param carts
+     * @return
+     */
+    private Boolean writeRedisWithDb(List<Cart> carts) {
+        if (carts == null || carts.isEmpty()) {
+            return Boolean.FALSE;
         }
-        CartAddParam cartAddParam = new CartAddParam();
+        Iterator it = carts.iterator();
         try {
-            cartAddParam.setCartId(cart.getCartId());
-            cartAddParam.setDescription(cart.getDescription());
-            cartAddParam.setShopId(cart.getShopId());
-            cartAddParam.setSkuId(cart.getSkuId());
-            cartAddParam.setStatus(cart.getStatus());
-            cartAddParam.setPrice(cart.getPrice());
-            cartAddParam.setAmount(cart.getAmount());
-            cartAddParam.setUserId(cart.getUserId());
+            while (it.hasNext()) {
+                CartAddParam cartAddParam = TransUtils.transCart2CartAddParam((Cart) it.next());
+                cartRedisService.addCart(cartAddParam);
+            }
         } catch (Exception ex) {
-            logger.error("CartServiceImpl.transCart2CartAddParam() | Exception: " + ex.getMessage());
+            logger.error("CartServiceImpl.writeRedisWithDb() | Exception:" + ex.getMessage());
+            return Boolean.FALSE;
         }
-        return  cartAddParam;
+        return Boolean.TRUE;
     }
 }

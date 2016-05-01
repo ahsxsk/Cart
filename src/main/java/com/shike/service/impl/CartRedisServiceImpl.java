@@ -3,6 +3,7 @@ package com.shike.service.impl;
 import com.shike.cart.redis.exception.RedisException;
 import com.shike.cart.redis.service.RedisService;
 import com.shike.cart.redis.service.impl.RedisServiceImpl;
+import com.shike.common.TransUtils;
 import com.shike.model.Cart;
 import com.shike.service.CartRedisService;
 import com.shike.vo.CartAddParam;
@@ -12,9 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by MLS on 16/4/29.
@@ -23,9 +22,11 @@ import java.util.Map;
 public class CartRedisServiceImpl implements CartRedisService{
     private static Logger logger = Logger.getLogger(CartRedisServiceImpl.class);
     /*userId-cartId有序集合键前缀*/
-    private final String preUid = "uid:";
+    private final String preUid = "userId:";
     /*cartId属性散列前缀*/
     private final String preCartId = "cartId:";
+    /*过期时间, 7天*/
+    private final int expireTime = 604800;
     @Resource(name = "redisService")
     private RedisServiceImpl redisService;
 
@@ -47,7 +48,43 @@ public class CartRedisServiceImpl implements CartRedisService{
         String key = preCartId + cartId;
         Map<String, String> redisMap = new HashMap<String, String>();
         redisMap = redisService.hgetAll(key);
-        return transMap2Cart(redisMap);
+        return TransUtils.transMap2Cart(redisMap);
+    }
+
+    /**
+     * 获取购物车列表
+     * @param cartQuery
+     * @return 购物车列表
+     * @throws Exception
+     */
+    public List<Cart> getAll(CartQuery cartQuery) throws Exception{
+        if (cartQuery == null) {
+            logger.error("CartDbServiceImpl.getAll() | error:cartQuery is null!");
+            throw new NullPointerException("cartQuery is null");
+        }
+        String userId = cartQuery.getUserId();
+        if (userId == null) {
+            logger.error("CartDbServiceImpl.getAll() | error:userId is null!");
+            throw new NullPointerException("userId is null");
+        }
+        /*获取该用户的所有cartId*/
+        String keyUid = preUid + userId.trim();
+        Set<String> cartIds = redisService.zrange(keyUid, 0, -1);
+        if (cartIds == null || cartIds.isEmpty()) { //Redis中没有数据, 返回的不是null
+            return null;
+        }
+        List<Cart> carts = new LinkedList<Cart>();
+        Iterator it = cartIds.iterator();
+        CartQuery query = new CartQuery(); //根据cartId查询
+        while (it.hasNext()) {
+            query.setCartId(it.next().toString());
+            Cart cartInfo = getCart(query);
+            if (cartInfo != null) { //防止有userId列表有, 散列对应没有, 概率极小ms us级误差
+                carts.add(cartInfo);
+            }
+        }
+
+        return carts;
     }
 
     /**
@@ -61,7 +98,7 @@ public class CartRedisServiceImpl implements CartRedisService{
             logger.error("CartRedisServiceImpl.addCart() | cartAddParam is null");
             throw new NullPointerException("cartAddParam is null");
         }
-        Map<String, String> redisMap = transCartAddParam2Map(cartAddParam);
+        Map<String, String> redisMap = TransUtils.transCartAddParam2Map(cartAddParam);
         if (redisMap == null) {
             logger.error("CartRedisServiceImpl.addCart() | transMap is null");
             throw new NullPointerException("transMap is null");
@@ -71,13 +108,16 @@ public class CartRedisServiceImpl implements CartRedisService{
         String keyCartId = preCartId + cartId;
         /*判断keyUid对应的member是否存在, 一般不需要判断,防止回灌Redis时ms, us级的误差*/
         try {
-            if(redisService.zscore(keyUid.trim(), cartId) != null) {
-                redisService.hmset(keyCartId.trim(), redisMap); /*cartId列表中有此cartId, 只写散列表*/
+            if(redisService.zscore(keyUid, cartId) != null) {
+                redisService.hmset(keyCartId, redisMap); /*cartId列表中有此cartId, 只写散列表*/
             } else {
             /*有序集合和散列表都需要写*/
-                redisService.zadd(keyUid.trim(), Double.valueOf(cartId), cartId);
-                redisService.hmset(keyCartId.trim(), redisMap);
+                redisService.zadd(keyUid, Double.valueOf(cartId), cartId);
+                redisService.hmset(keyCartId, redisMap);
             }
+            /*设置超时*/
+            redisService.expire(keyUid, expireTime);
+            redisService.expire(keyCartId, expireTime);
         } catch (Exception ex) {
             logger.error("CartRedisServiceImpl.addCart() | Exception: " + ex.getMessage());
             throw new RedisException(ex);
@@ -85,84 +125,5 @@ public class CartRedisServiceImpl implements CartRedisService{
 
         return Boolean.TRUE;
     }
-    /**
-     * 根据从Redis获取的map,设置Cart对象
-     * @param map redis中获取的map
-     * @return cartInfo 购物车实体类对象
-     */
-    private Cart transMap2Cart(Map<String, String> map) {
-        if (map == null || map.isEmpty()) {
-            return null;
-        }
-        Cart cartInfo = new Cart();
-        String buf = null;
-        if ((buf = map.get("cartId")) != null) {
-            cartInfo.setCartId(buf); //cartId
-        }
-        if ((buf = map.get("shopId")) != null) {
-            cartInfo.setShopId(buf); //shopId
-        }
-        if ((buf = map.get("userId")) != null) {
-            cartInfo.setUserId(buf); //userId
-        }
-        if ((buf = map.get("Id")) != null) {
-            cartInfo.setId(Long.getLong(buf)); //Id,基本不使用
-        }
-        if ((buf = map.get("status")) != null) {
-            cartInfo.setStatus(Integer.getInteger(buf)); //status
-        }
-        if ((buf = map.get("amount")) != null) {
-            cartInfo.setAmount(Integer.getInteger(buf)); //amount
-        }
-        if ((buf = map.get("skuId")) != null) {
-            cartInfo.setSkuId(buf); //skuId
-        }
-        if ((buf = map.get("price")) != null) {
-            cartInfo.setPrice(Integer.valueOf(buf)); //price
-        }
-        if ((buf = map.get("description")) != null) {
-            cartInfo.setDescription(buf); //description
-        }
-        if ((buf = map.get("createTime")) != null) {
-            cartInfo.setCreateTime(Timestamp.valueOf(buf)); //createTime
-        }
-        if ((buf = map.get("updateTime")) != null) {
-            cartInfo.setUpdateTime(Timestamp.valueOf(buf)); //updateTime
-        }
-        return cartInfo;
-    }
 
-    /**
-     * 将加车对象转换为Map对象
-     * @param cartAddParam
-     * @return Map
-     */
-    private Map<String,String> transCartAddParam2Map(CartAddParam cartAddParam) {
-        if (cartAddParam == null) {
-            logger.error("CartRedisServiceImpl.transCartAddParam2Map() | cartAddParam is null");
-            return null;
-        }
-        Map<String, String> result = new HashMap<String, String>();
-        try {
-            result.put("cartId", cartAddParam.getCartId());
-            result.put("skuId", cartAddParam.getSkuId());
-            result.put("userId", cartAddParam.getUserId());
-            result.put("price", cartAddParam.getPrice().toString());
-            result.put("amount", cartAddParam.getAmount().toString());
-            result.put("shopId", cartAddParam.getShopId());
-            result.put("status", cartAddParam.getStatus().toString());
-            if (cartAddParam.getDescription() == null)
-            {
-                result.put("description", "null"); //防止description为空
-            } else {
-                result.put("description", cartAddParam.getDescription());
-            }
-
-        } catch (Exception ex) {
-            logger.error("CartRedisServiceImpl.transCartAddParam2Map() | Exception:" + ex.getMessage()
-                    + " | cartAddParam" + cartAddParam);
-            return null;
-        }
-        return result;
-    }
 }
