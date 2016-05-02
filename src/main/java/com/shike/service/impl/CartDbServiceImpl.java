@@ -4,6 +4,7 @@ import com.shike.common.IdGenerator;
 import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
 import com.shike.service.CartDbService;
+import com.shike.vo.CartAddParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,12 @@ public class CartDbServiceImpl implements CartDbService {
      */
     public Cart getCart(CartQuery cartQuery) throws Exception {
         if (cartQuery == null) {
-            logger.error("CartDbServiceImpl.getCart() | error:cartQuery is null!");
+            logger.error("CartDbServiceImpl.getCart() | Error:cartQuery is null!");
             throw new NullPointerException("cartQuery is null!");
         }
         if (cartQuery.getCartId() == null) {
-            logger.error("CartDbServiceImpl.getCart() | error:cartId is null!");
-            throw new NullPointerException("cartId is null!");
+            logger.error("CartDbServiceImpl.getCart() | Error:cartId is null!");
+            throw new IllegalArgumentException("cartId is null!");
         }
         return cartDao.selectCartByCartId(cartQuery);
     }
@@ -48,29 +49,31 @@ public class CartDbServiceImpl implements CartDbService {
      */
     public List<Cart> getAll(CartQuery cartQuery) throws Exception{
         if (cartQuery == null) {
-            logger.error("CartDbServiceImpl.getAll() | error:cartQuery is null!");
+            logger.error("CartDbServiceImpl.getAll() | Error:cartQuery is null!");
             throw new NullPointerException("cartQuery is null");
         }
         if (cartQuery.getUserId() == null) {
-            logger.error("CartDbServiceImpl.getAll() | error:userId is null!");
-            throw new NullPointerException("userId is null");
+            logger.error("CartDbServiceImpl.getAll() | Error:userId is null!");
+            throw new IllegalArgumentException("userId is null");
         }
         return cartDao.selectCartByUserId(cartQuery);
     }
 
     /**
      * 加车
-     * @param cart 购物车信息
+     * @param cartAddParam 购物车信息
      * @return 是否加车成功 1:成功
      * @throws Exception
      */
-    public int addCart(Cart cart) throws Exception {
-        if (cart == null) {
+    public Boolean addCart(CartAddParam cartAddParam) throws Exception {
+        if (cartAddParam == null) {
+            logger.error("CartDbServiceImpl.addCart() | Error:cartAddParam is null");
             throw new NullPointerException("cart is null");
         }
-        String skuId = cart.getSkuId();
-        String userId = cart.getUserId();
-        Integer status = cart.getStatus();
+        String cartId = cartAddParam.getCartId();
+        String skuId = cartAddParam.getSkuId();
+        String userId = cartAddParam.getUserId();
+        Integer status = cartAddParam.getStatus();
         if (skuId == null || userId == null || status < 0) {
             throw new IllegalArgumentException("参数异常");
         }
@@ -98,7 +101,7 @@ public class CartDbServiceImpl implements CartDbService {
 //        } catch (Exception e) {
 //            throw new Exception("TODO: CartException");
 //        }
-        return 1;
+        return Boolean.FALSE;
     }
 
     /**

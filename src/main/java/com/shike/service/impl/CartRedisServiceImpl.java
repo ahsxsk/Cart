@@ -38,12 +38,14 @@ public class CartRedisServiceImpl implements CartRedisService{
      */
     public Cart getCart(CartQuery cartQuery) throws Exception {
         if (cartQuery == null) {
-            logger.error("CartRedisServiceImpl.getCart() | cartQuery is null", new NullPointerException("cartQuery is null"));
+            logger.error("CartRedisServiceImpl.getCart() | cartQuery is null");
+            throw new IllegalArgumentException("cartQuery is null");
         }
 
         String cartId = cartQuery.getCartId(); //购物车Id
         if (cartId == null) {
-            logger.error("CartRedisServiceImpl.getCart() | cartId is null", new NullPointerException("cartId is null"));
+            logger.error("CartRedisServiceImpl.getCart() | cartId is null");
+            throw new IllegalArgumentException("cartId is null");
         }
         String key = preCartId + cartId;
         Map<String, String> redisMap = new HashMap<String, String>();
@@ -65,7 +67,7 @@ public class CartRedisServiceImpl implements CartRedisService{
         String userId = cartQuery.getUserId();
         if (userId == null) {
             logger.error("CartDbServiceImpl.getAll() | error:userId is null!");
-            throw new NullPointerException("userId is null");
+            throw new IllegalArgumentException("userId is null");
         }
         /*获取该用户的所有cartId*/
         String keyUid = preUid + userId.trim();

@@ -1,6 +1,7 @@
 package com.shike.service;
 
 import com.shike.model.Cart;
+import com.shike.vo.CartAddParam;
 import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +29,10 @@ public interface CartDbService {
 
     /**
      * 加车
-     * @param cart
+     * @param cartAddParam
      * @return
      */
-    public int addCart(Cart cart) throws Exception;
+    public Boolean addCart(CartAddParam cartAddParam) throws Exception;
 
     /**
      * 编辑Cart商品数量
