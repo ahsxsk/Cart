@@ -1,11 +1,9 @@
 package com.shike.vo;
 
-import java.sql.Timestamp;
-
 /**
  * Created by shike on 16/4/29.
  */
-public class CartQuery {
+public class CartEditParam {
     //自增主键
     private Long id;
     //购物车Id
@@ -14,9 +12,11 @@ public class CartQuery {
     private String userId;
     //状态
     private Integer status;
-
     //sku
     private String skuId;
+    //amount
+    private Integer amount;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -55,5 +55,13 @@ public class CartQuery {
 
     public void setSkuId(String skuId) {
         this.skuId = skuId;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 }

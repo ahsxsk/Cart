@@ -1,6 +1,8 @@
 package com.shike.dao;
 
 import com.shike.model.Cart;
+import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Repository;
 
@@ -27,17 +29,17 @@ public interface ICartDao {
 
     /**
      * 插入一条Cart信息
-     * @param cart
+     * @param cartAddParam
      * @return
      */
-    public int insertCart(Cart cart);
+    public Boolean insertCart(CartAddParam cartAddParam);
 
     /**
      * 更新Cart信息
-     * @param cart
+     * @param cartEditParam
      * @return
      */
-    public int updateCartBySkuId(Cart cart);
+    public int updateCartByCartId(CartEditParam cartEditParam);
 
     /**
      * 删除购物车

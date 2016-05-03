@@ -132,7 +132,13 @@ public final class IdGenerator {
             return null;
         }
         int len = userId.length();
-        return new StringBuilder(userId.substring(len - 5, len - 1));
+        int shift = 0;
+        if (len >= 5) {
+            shift = 5;
+        } else {
+            shift = 1;
+        }
+        return new StringBuilder(userId.substring(len - shift, len - 1));
     }
 
     /**

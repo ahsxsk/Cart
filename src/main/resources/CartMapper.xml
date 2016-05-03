@@ -43,7 +43,7 @@
         </if>
     </select>
     <!--插入一条信息-->
-    <insert id="insertCart" parameterType="com.shike.model.Cart" useGeneratedKeys="true"
+    <insert id="insertCart" parameterType="com.shike.vo.CartQuery" useGeneratedKeys="true"
             keyProperty="id">
         insert into t_cart_cart
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -113,12 +113,12 @@
         </trim>
     </insert>
     <!--更新购物车商品数量-->
-    <update id="updateCartBySkuId" parameterType="com.shike.model.Cart">
+    <update id="updateCartByCartId" parameterType="com.shike.vo.CartEditParam">
         update t_cart_cart
         <set>
             amount = #{amount, jdbcType=INTEGER}
         </set>
-        where userId = #{userId} and skuId= #{skuId} and status = 0
+        where cartId = #{cartId}
     </update>
     <!--删除购物车-->
     <update id="deleteCartByCartId" parameterType="com.shike.model.Cart">

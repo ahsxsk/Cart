@@ -2,6 +2,7 @@ package com.shike.service;
 
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 
 import java.util.List;
@@ -11,14 +12,34 @@ import java.util.List;
  * Created by shike on 16/4/29.
  */
 public interface CartRedisService {
-    /*根据cartId获取购物车信息*/
+    /**
+     * 查询购物车信息
+     * @param cartQuery 购物车查询对象
+     * @return Cart 购物车信息
+     * @throws Exception
+     */
     Cart getCart(CartQuery cartQuery) throws Exception;
-    /*加车*/
+
+    /**
+     * 加车, 回写Redis
+     * @param cartAddParam
+     * @return 是否加车成功
+     * @throws Exception
+     */
     Boolean addCart(CartAddParam cartAddParam) throws Exception;
+
     /**
      * 查询多条Cart信息,即购物车列表
      * @param cartQuery
      * @return
      */
-    public List<Cart> getAll(CartQuery cartQuery) throws Exception;
+    List<Cart> getAll(CartQuery cartQuery) throws Exception;
+
+    /**
+     * 编辑Sku数量
+     * @param cartEditParam
+     * @return
+     * @throws Exception
+     */
+    Boolean editSkuAmount(CartEditParam cartEditParam) throws Exception;
 }

@@ -5,6 +5,7 @@ import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
 import com.shike.service.CartDbService;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -70,67 +71,54 @@ public class CartDbServiceImpl implements CartDbService {
             logger.error("CartDbServiceImpl.addCart() | Error:cartAddParam is null");
             throw new NullPointerException("cart is null");
         }
+        /*参数检验, TODO:优化为统一代码*/
         String cartId = cartAddParam.getCartId();
         String skuId = cartAddParam.getSkuId();
         String userId = cartAddParam.getUserId();
         Integer status = cartAddParam.getStatus();
-        if (skuId == null || userId == null || status < 0) {
+        Integer amount = cartAddParam.getAmount();
+        String shopId = cartAddParam.getShopId();
+        Integer price = cartAddParam.getPrice();
+        String description = cartAddParam.getDescription();
+        if (skuId == null || userId == null || status == null || status < 0
+                || cartId == null || amount == null || shopId == null || price == null) {
+            logger.error("CartDbServiceImpl.addCart() | Arguments Error. Arguments:" + "cartId:" + cartId + ",skuId:" + skuId
+            + "userId:" + userId + ",status:" + status + ",amount:" + amount + ",shopId:" + shopId
+                    + ",price:" + price + ",description:" + description);
             throw new IllegalArgumentException("参数异常");
         }
-
-//        try {
-////            List<Cart> carts = getAll(); //获取用户购物车商品列表
-////            int len = carts.size();                    //如果购物车该sku存在,则修改数量,否则加车
-////            if (len != 0) {
-////                while (len-- > 0) {
-////                    if (carts.get(len).getSkuId().equals(skuId)) {
-////                        Integer amount = carts.get(len).getAmount() + 1;
-////                        return editSkuAmount(userId, skuId, amount);
-////                    }
-////                }
-//            }
-//            IdGenerator idGenerator = IdGenerator.getIdGenerator();
-//            try {
-//                String cartId = idGenerator.getId(userId).toString();//购物车Id
-//                cart.setCartId(cartId);
-//            } catch (Exception e) {
-//                //TODO
-//                throw e;
-//            }
-//            return cartDao.insertCart(cart);
-//        } catch (Exception e) {
-//            throw new Exception("TODO: CartException");
-//        }
-        return Boolean.FALSE;
+        if (description == null) { //redis空置无法操作, 统一置为null
+            description = "null";
+        }
+        if (cartDao.insertCart(cartAddParam)) {
+            return Boolean.TRUE;
+        } else {
+            logger.error("CartDbServiceImpl.addCart() | DbError:db error");
+            return Boolean.FALSE;
+        }
     }
 
     /**
-     * 更新购物车商品数量
-     * @param userId
-     * @param skuId
-     * @param amount
+     * 更新购物车商品数量, 根据sku
+     * @param cartEditParam
      * @return
      * @throws Exception
      */
-    public int editSkuAmount(String userId, String skuId, Integer amount) throws Exception {
-        if (userId == null) {
-            throw new NullPointerException("userId is null");
+    public Boolean editSkuAmount(CartEditParam cartEditParam) throws Exception {
+        if (cartEditParam == null) {
+            logger.error("CartDbServiceImpl.editSkuAmount() | Error:cartEditParam is null");
+            throw new NullPointerException("cartQuery is null");
         }
-        if (skuId == null) {
-            throw new NullPointerException("skuId is null");
+        String cartId = cartEditParam.getCartId();
+        Integer amount = cartEditParam.getAmount();
+        if (cartId == null || amount == null || amount < 0) {
+            logger.error("CartDbServiceImpl.editSkuAmount() | Arguments Error. Arguments:userId:"  + ",amount:" + amount);
+            throw new IllegalArgumentException("参数异常");
         }
-        if (amount == null) {
-            throw new NullPointerException("amount is null");
-        }
-
-        try {
-            Cart cart = new Cart();
-            cart.setUserId(userId);
-            cart.setSkuId(skuId);
-            cart.setAmount(amount);
-            return cartDao.updateCartBySkuId(cart);
-        } catch (Exception e) {
-            throw new Exception("TODO: CartException");
+        if (cartDao.updateCartByCartId(cartEditParam) >= 1) {
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
         }
     }
 

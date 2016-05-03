@@ -2,6 +2,7 @@ package com.shike.service;
 
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +37,11 @@ public interface CartDbService {
 
     /**
      * 编辑Cart商品数量
-     * @param userId
-     * @param skuId
-     * @param amount
+     * @param cartEditParam
      * @return
      * @throws Exception
      */
-    public int editSkuAmount(String userId, String skuId, Integer amount) throws Exception;
+    public Boolean editSkuAmount(CartEditParam cartEditParam) throws Exception;
 
     /**
      * 删除购物车,支持批量删除

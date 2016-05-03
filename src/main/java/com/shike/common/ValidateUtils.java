@@ -1,6 +1,7 @@
 package com.shike.common;
 
 import com.alibaba.fastjson.JSON;
+import com.shike.vo.CartAddParam;
 import com.shike.vo.CartQuery;
 
 import java.util.List;
@@ -93,16 +94,16 @@ public final class ValidateUtils {
      * @return
      */
     private static Boolean validateAdd(Map<String, String> param) {
-        if (param == null || param.size() == 0) {
+        if (param == null || param.size() == 0 || param.get("cartAddParam") == null) {
             return Boolean.FALSE;
         }
-        //String cartId = param.get("cartId"); //购物车Id
-        String shopId = param.get("skuId"); //skuId
-        String userId = param.get("userId"); //用户Id
-        String price = param.get("price"); //商品价格
-        String amount = param.get("amount"); //商品数量
-        String skuId = param.get("skuId");
-        String status = param.get("status");
+        CartAddParam cartAddParam = JSON.parseObject(param.get("cartAddParam"), CartAddParam.class);
+        String shopId = cartAddParam.getSkuId(); //skuId
+        String userId = cartAddParam.getUserId(); //用户Id
+        Integer price = cartAddParam.getPrice(); //商品价格
+        Integer amount = cartAddParam.getAmount(); //商品数量
+        String skuId = cartAddParam.getSkuId();
+        Integer status = cartAddParam.getStatus();
         if (shopId == null || userId == null || price == null
                 || amount == null || skuId == null || status == null) {
             return Boolean.FALSE;

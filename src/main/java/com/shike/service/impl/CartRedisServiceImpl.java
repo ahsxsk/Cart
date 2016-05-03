@@ -7,6 +7,7 @@ import com.shike.common.TransUtils;
 import com.shike.model.Cart;
 import com.shike.service.CartRedisService;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -100,20 +101,37 @@ public class CartRedisServiceImpl implements CartRedisService{
             logger.error("CartRedisServiceImpl.addCart() | cartAddParam is null");
             throw new NullPointerException("cartAddParam is null");
         }
+        /*参数检验, TODO:优化为统一代码*/
+        String cartId = cartAddParam.getCartId();
+        String skuId = cartAddParam.getSkuId();
+        String userId = cartAddParam.getUserId();
+        Integer status = cartAddParam.getStatus();
+        Integer amount = cartAddParam.getAmount();
+        String shopId = cartAddParam.getShopId();
+        Integer price = cartAddParam.getPrice();
+        String description = cartAddParam.getDescription();
+        if (skuId == null || userId == null || status == null || status < 0
+                || cartId == null || amount == null || shopId == null || price == null) {
+            logger.error("CartDbServiceImpl.addCart() | Arguments:" + "cartId:" + cartId + ",skuId:" + skuId
+                    + "userId:" + userId + ",status:" + status + ",amount:" + amount + ",shopId:" + shopId
+                    + ",price:" + price + ",description:" + description);
+            throw new IllegalArgumentException("参数异常");
+        }
         Map<String, String> redisMap = TransUtils.transCartAddParam2Map(cartAddParam);
         if (redisMap == null) {
             logger.error("CartRedisServiceImpl.addCart() | transMap is null");
             throw new NullPointerException("transMap is null");
         }
         String keyUid = preUid + redisMap.get("userId"); //用户cartId列表key
-        String cartId = redisMap.get("cartId").trim();
+        cartId = redisMap.get("cartId").trim();
         String keyCartId = preCartId + cartId;
         /*判断keyUid对应的member是否存在, 一般不需要判断,防止回灌Redis时ms, us级的误差*/
         try {
             if(redisService.zscore(keyUid, cartId) != null) {
-                redisService.hmset(keyCartId, redisMap); /*cartId列表中有此cartId, 只写散列表*/
+                /*cartId列表中有此cartId, 只写散列表*/
+                redisService.hmset(keyCartId, redisMap);
             } else {
-            /*有序集合和散列表都需要写*/
+                /*有序集合和散列表都需要写*/
                 redisService.zadd(keyUid, Double.valueOf(cartId), cartId);
                 redisService.hmset(keyCartId, redisMap);
             }
@@ -124,8 +142,34 @@ public class CartRedisServiceImpl implements CartRedisService{
             logger.error("CartRedisServiceImpl.addCart() | Exception: " + ex.getMessage());
             throw new RedisException(ex);
         }
-
         return Boolean.TRUE;
     }
 
+    /**
+     * 编辑Cart商品数量, 根据cartId
+     * @param cartEditParam
+     * @return
+     * @throws Exception
+     */
+    public Boolean editSkuAmount(CartEditParam cartEditParam) throws Exception {
+        if (cartEditParam == null) {
+            logger.error("CartRedisServiceImpl.editSkuAmount() | Error:cartEditParam is null");
+            throw new NullPointerException("cartQuery is null");
+        }
+        String cartId = cartEditParam.getCartId();
+        Integer amount = cartEditParam.getAmount();
+        if (cartId == null || amount == null || amount < 0) {
+            logger.error("CartRedisServiceImpl.editSkuAmount() | Arguments Error. Arguments:cartId:" + cartId
+                    + ",amount:" + amount);
+            throw new IllegalArgumentException("参数异常");
+        }
+        String keyCartId = preCartId + cartId;
+        Map<String, String> redisMap = new HashMap<String, String>();
+        redisMap.put("amount", amount.toString());
+        if (redisService.hmset(keyCartId, redisMap).equals("OK")) { //修改成功
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
+        }
+    }
 }
