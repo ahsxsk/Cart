@@ -7,6 +7,7 @@ import com.shike.model.Cart;
 import com.shike.service.CartRedisService;
 import com.shike.service.impl.CartRedisServiceImpl;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -139,7 +140,7 @@ public class CartController extends AbstractCtl {
         GetReturn getReturn = new GetReturn();
         //response信息
         String resultStr = "";
-        Integer effect = 0;
+        Boolean effect = Boolean.FALSE;
         try {
             //获取请求的IP,记录日志
             String remoteIp = HttpUtils.getRemoteIp(request);
@@ -159,10 +160,8 @@ public class CartController extends AbstractCtl {
                         ExceptionEnum.PARAM_NULL.value()
                 );
             } else {
-//                String userId = paramMap.get("userId");
-//                String amount = paramMap.get("amount");
-//                String skuId = paramMap.get("skuId");
-//                effect = cartService.editSkuAmount(userId,skuId,Integer.parseInt(amount));
+                CartEditParam cartEditParam = JSON.parseObject(paramMap.get("cartEditParam"), CartEditParam.class);
+                effect = cartService.editSkuAmount(cartEditParam);
             }
             resultStr = constructResult(effect, getReturn);
             logger.info("CartController.editSkuAmount | result:" + resultStr);
@@ -281,26 +280,4 @@ public class CartController extends AbstractCtl {
         return resultStr;
     }
 
-//    private CartAddParam constructAddParam(Map<String, String> param) throws Exception {
-//        CartAddParam cartAddParam = new CartAddParam();
-//        String userId = param.get("userId"); //用户Id
-//        String shopId = param.get("shopId"); //shopId
-//        Integer price = Integer.parseInt(param.get("price")); //商品价格
-//        Integer amount = Integer.parseInt(param.get("amount")); //商品数量
-//        String skuId = param.get("skuId"); //skuId
-//        Integer status = Integer.parseInt(param.get("status"));
-//        cartAddParam.setSkuId(skuId);
-//        cartAddParam.setShopId(shopId);
-//        cartAddParam.setUserId(userId);
-//        cartAddParam.setAmount(amount);
-//        cartAddParam.setPrice(price);
-//        cartAddParam.setStatus(status);
-//        if (param.get("description") != null) {
-//            cartAddParam.setDescription(param.get("description"));
-//        } else {
-//            cartAddParam.setDescription("null");
-//        }
-//
-//        return cartAddParam;
-//    }
 }

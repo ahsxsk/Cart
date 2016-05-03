@@ -2,6 +2,7 @@ package com.shike.common;
 
 import com.alibaba.fastjson.JSON;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 
 import java.util.List;
@@ -76,13 +77,11 @@ public final class ValidateUtils {
      * @return
      */
     private static Boolean validateEdit(Map<String, String> param) {
-        if (param == null || param.size() == 0) {
+        if (param == null || param.size() == 0 || param.get("cartEditParam") == null) {
             return Boolean.FALSE;
         }
-        String userId = param.get("userId");
-        String amount = param.get("amount");
-        String skuId = param.get("skuId");
-        if (userId == null || amount == null || skuId == null) {
+        CartEditParam cartEditParam = JSON.parseObject(param.get("cartEditParam"), CartEditParam.class);
+        if(cartEditParam.getCartId() == null || cartEditParam.getAmount() == null) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
