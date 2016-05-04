@@ -7,6 +7,7 @@ import com.shike.common.TransUtils;
 import com.shike.model.Cart;
 import com.shike.service.CartRedisService;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
@@ -28,6 +29,8 @@ public class CartRedisServiceImpl implements CartRedisService{
     private final String preCartId = "cartId:";
     /*过期时间, 7天*/
     private final int expireTime = 604800;
+    /*每次只允许删除一个cartId*/
+    private final int MaxSize = 1;
     @Resource(name = "redisService")
     private RedisServiceImpl redisService;
 
@@ -171,5 +174,49 @@ public class CartRedisServiceImpl implements CartRedisService{
         } else {
             return Boolean.FALSE;
         }
+    }
+    /**
+     * 删除购物车
+     * @param carts 购物车列表
+     * @return 是否删除成功
+     * @throws Exception
+     */
+    public Boolean delectCart(List<CartDelParam> carts) throws Exception {
+        if (carts == null) {
+            logger.error("CartRedisServiceImpl.delectCart() | Error:CartDelParam is null");
+            throw new NullPointerException("CartDelParam is null");
+        }
+        Iterator it = carts.iterator();
+        String cartId = null;
+        String userId = null;
+        CartDelParam cartDelParam = null;
+        String keyUserId = null;
+        String keyCartId = null;
+        /*散列中需要删除的属性*/
+        String [] fields = {"cartId", "skuId", "description", "shopId", "status", "price", "userId", "amount"};
+        try {
+            while (it.hasNext()) {
+                cartDelParam = (CartDelParam) it.next();
+                if ((cartId = cartDelParam.getCartId()) != null
+                        && (userId = cartDelParam.getUserId()) != null) {
+                    keyUserId = preUid + userId;
+                    keyCartId = preCartId + cartId;
+                    String [] cartIds = {cartId};
+                    redisService.zrem(keyUserId, cartIds);
+                    redisService.hdel(keyCartId, fields);
+                    return Boolean.TRUE;
+                } else {
+                    logger.error("CartRedisServiceImpl.delectCart() | Arguments:cartId:" + cartId + ",userId" + userId);
+                    return Boolean.FALSE;
+                }
+            }
+        } catch (RedisException rex) {
+            logger.error("CartRedisServiceImpl.delectCart() | Exception:" + rex.getMessage());
+            throw new Exception(rex);
+        } catch (Exception ex) {
+            logger.error("CartRedisServiceImpl.delectCart() | Exception:" + ex.getMessage());
+            throw ex;
+        }
+        return Boolean.FALSE;
     }
 }

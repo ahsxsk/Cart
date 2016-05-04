@@ -2,6 +2,7 @@ package com.shike.service;
 
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Service;
@@ -45,11 +46,11 @@ public interface CartDbService {
 
     /**
      * 删除购物车,支持批量删除
-     * @param cartIds
+     * @param carts
      * @return
      * @throws Exception
      */
-    public int delectCart(List<String> cartIds) throws Exception;
+    public Boolean delectCart(List<CartDelParam> carts) throws Exception;
 
 
 }

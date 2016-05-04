@@ -2,6 +2,7 @@ package com.shike.dao;
 
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.springframework.stereotype.Repository;
@@ -46,5 +47,5 @@ public interface ICartDao {
      * @param carts
      * @return
      */
-    public int deleteCartByCartId(List<Cart> carts);
+    public int deleteCartByCartId(List<CartDelParam> carts);
 }

@@ -5,6 +5,7 @@ import com.shike.dao.ICartDao;
 import com.shike.model.Cart;
 import com.shike.service.CartDbService;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
@@ -124,26 +125,23 @@ public class CartDbServiceImpl implements CartDbService {
 
     /**
      * 删除购物车
-     * @param cartIds 购物车ID列表
+     * @param carts 购物车列表
      * @return 是否删除成功
      * @throws Exception
      */
-    public int delectCart(List<String> cartIds) throws Exception {
-        if (cartIds == null) {
-            throw new NullPointerException("ids is null");
+    public Boolean delectCart(List<CartDelParam> carts) throws Exception {
+        if (carts == null) {
+            logger.error("CartDbServiceImpl.delectCart() | Error:carts is null");
+            throw new NullPointerException("carts is null");
         }
-        List<Cart> carts = new ArrayList<Cart>();
-        int len = cartIds.size();
-        while (len-- > 0) {
-            Cart cart = new Cart();
-            cart.setCartId(cartIds.get(len));
-            carts.add(cart);
-        }
-
         try {
-            return cartDao.deleteCartByCartId(carts);
+            if (cartDao.deleteCartByCartId(carts) >= 1) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
         } catch (Exception e) {
-            throw new Exception("TODO:");
+            throw new Exception(e.getMessage() + "TODO:xx");
         }
     }
 }

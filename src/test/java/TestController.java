@@ -1,6 +1,7 @@
 import com.alibaba.fastjson.JSON;
 import com.shike.controller.CartController;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
@@ -62,23 +63,23 @@ public class TestController {
 //        }
 //    }
 
-    @Test
-    public void testEdit() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        try {
-            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
-            request.setMethod("POST");
-            CartEditParam cartEditParam = new CartEditParam();
-            cartEditParam.setCartId("201605032009255340000110223123");
-            cartEditParam.setAmount(8);
-            String cart = JSON.toJSONString(cartEditParam);
-            request.setParameter("cartEditParam", cart);
-            cartController.editSkuAmount(request,response);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+//    @Test
+//    public void testEdit() {
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        MockHttpServletResponse response = new MockHttpServletResponse();
+//        try {
+//            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
+//            request.setMethod("POST");
+//            CartEditParam cartEditParam = new CartEditParam();
+//            cartEditParam.setCartId("201605032009255340000110223123");
+//            cartEditParam.setAmount(8);
+//            String cart = JSON.toJSONString(cartEditParam);
+//            request.setParameter("cartEditParam", cart);
+//            cartController.editSkuAmount(request,response);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//    }
 
 //    @Test
 //    public void testAdd() {
@@ -102,23 +103,24 @@ public class TestController {
 //        }
 //    }
 
-//    @Test
-//    public void testDel() {
-//        MockHttpServletRequest request = new MockHttpServletRequest();
-//        MockHttpServletResponse response = new MockHttpServletResponse();
-//        try {
-//            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
-//            request.setMethod("POST");
-//            List<String> cartIds = new ArrayList<String>();
-//            cartIds.add("3");
-//            cartIds.add("4");
-//            cartIds.add("5");
-//            String str = JSON.toJSONString(cartIds);
-//            request.setParameter("cartIds", str);
-//
-//            cartController.deleteCart(request,response);
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//    }
+    @Test
+    public void testDel() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        try {
+            request.setAttribute(HandlerMapping.INTROSPECT_TYPE_LEVEL_MAPPING,true);
+            request.setMethod("POST");
+            List<CartDelParam> carts = new ArrayList<CartDelParam>();
+            CartDelParam cartDelParam = new CartDelParam();
+            cartDelParam.setCartId("201605032009255340000110223123");
+            cartDelParam.setUserId("TUE12131231");
+            carts.add(cartDelParam);
+            String str = JSON.toJSONString(carts);
+            request.setParameter("cartDelParams", str);
+
+            cartController.deleteCart(request,response);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

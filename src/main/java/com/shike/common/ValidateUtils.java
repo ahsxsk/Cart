@@ -1,10 +1,13 @@
 package com.shike.common;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 /**
@@ -119,9 +122,18 @@ public final class ValidateUtils {
         if (param == null || param.size() == 0) {
             return Boolean.FALSE;
         }
-        String cartIds = param.get("cartIds");
-        if (cartIds == null || cartIds.length() == 0) {
+        String cartDelParams = param.get("cartDelParams");
+        if (cartDelParams == null || cartDelParams.length() == 0) {
             return Boolean.FALSE;
+        }
+        List<CartDelParam> cartDelParamList = JSONArray.parseArray(cartDelParams, CartDelParam.class);
+        Iterator it = cartDelParamList.iterator();
+        CartDelParam cartDelParam = null;
+        while (it.hasNext()) {
+            cartDelParam = (CartDelParam) it.next();
+            if (cartDelParam.getCartId() == null || cartDelParam.getUserId() == null) {
+                return Boolean.FALSE;
+            }
         }
         return Boolean.TRUE;
     }

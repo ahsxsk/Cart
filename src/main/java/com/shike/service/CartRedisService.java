@@ -2,6 +2,7 @@ package com.shike.service;
 
 import com.shike.model.Cart;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 
@@ -42,4 +43,11 @@ public interface CartRedisService {
      * @throws Exception
      */
     Boolean editSkuAmount(CartEditParam cartEditParam) throws Exception;
+    /**
+     * 删除购物车
+     * @param carts 购物车列表
+     * @return 是否删除成功
+     * @throws Exception
+     */
+    Boolean delectCart(List<CartDelParam> carts) throws Exception;
 }

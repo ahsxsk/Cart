@@ -121,7 +121,7 @@
         where cartId = #{cartId}
     </update>
     <!--删除购物车-->
-    <update id="deleteCartByCartId" parameterType="com.shike.model.Cart">
+    <update id="deleteCartByCartId" parameterType="com.shike.vo.CartDelParam">
         update t_cart_cart
         <set>
             status = <include refid="deleteStatus"></include>

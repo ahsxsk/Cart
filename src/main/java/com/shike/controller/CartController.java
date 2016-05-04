@@ -7,6 +7,7 @@ import com.shike.model.Cart;
 import com.shike.service.CartRedisService;
 import com.shike.service.impl.CartRedisServiceImpl;
 import com.shike.vo.CartAddParam;
+import com.shike.vo.CartDelParam;
 import com.shike.vo.CartEditParam;
 import com.shike.vo.CartQuery;
 import org.apache.log4j.Logger;
@@ -228,7 +229,7 @@ public class CartController extends AbstractCtl {
         GetReturn getReturn = new GetReturn();
         //response信息
         String resultStr = "";
-        Integer effect = 0;
+        Boolean effect = Boolean.FALSE;
         try {
             //获取请求的IP,记录日志
             String remoteIp = HttpUtils.getRemoteIp(request);
@@ -248,8 +249,8 @@ public class CartController extends AbstractCtl {
                         ExceptionEnum.PARAM_NULL.value()
                 );
             } else {
-                List<String> cartIds = JSON.parseArray(paramMap.get("cartIds"), String.class);
-                effect = cartService.delectCart(cartIds);
+                List<CartDelParam> carts = JSONArray.parseArray(paramMap.get("cartDelParams"), CartDelParam.class);
+                effect = cartService.delectCart(carts);
             }
             resultStr = constructResult(effect, getReturn);
             logger.info("CartController.deleteCart() | result:" + resultStr);
