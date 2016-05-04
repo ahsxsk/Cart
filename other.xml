@@ -84,8 +84,14 @@
     </filter>
   </component>
   <component name="SvnApplicationSettings">
+    <option name="myCheckoutURLs">
+      <list>
+        <option value="http://svn.meilishuo.com/repos/mpay/pay-bankchannel/trunk/bankchannel-notify/pay-channel-notify/" />
+      </list>
+    </option>
     <option name="myTypedURLs">
       <list>
+        <option value="http://svn.meilishuo.com/repos/mpay/pay-bankchannel/trunk/bankchannel-notify/pay-channel-notify/" />
         <option value="http://svn.meilishuo.com/repos/mpay/pay-trade/trunk/pay-trade/trade-deal/" />
       </list>
     </option>
