@@ -1,7 +1,9 @@
 <application>
   <component name="FindSettings">
+    <option name="caseSensitive" value="true" />
     <option name="customScope" value="File '/Users/MLS/shike/JedisZset/src/main/java/com/shike/cart/redis/exception/RedisException.java'" />
     <option name="defaultScopeName" value="File '/Users/MLS/shike/JedisZset/src/main/java/com/shike/cart/redis/exception/RedisException.java'" />
+    <option name="CASE_SENSITIVE_SEARCH" value="true" />
     <option name="SEARCH_SCOPE" value="File '/Users/MLS/shike/JedisZset/src/main/java/com/shike/cart/redis/exception/RedisException.java'" />
   </component>
 </application>
